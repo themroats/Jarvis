@@ -10,6 +10,7 @@ class CharList extends React.Component {
     super(props);
     this.state = {
       charInput: "",
+      answer: "",
       res: {name: "loading...", thumbnail: {}}
     };
     this.updateCharInput = this.updateCharInput.bind(this);
@@ -22,9 +23,12 @@ class CharList extends React.Component {
 
   charSubmit() {
     console.log(this.state.charInput);
-    axios.get("http://localhost:3001/").then((response) => {
+    axios.post("http://eebce435.ngrok.io", {"utterance": this.state.charInput}).then((response) => {
+
       // this.setState({todos: response.data});
-      console.log("received ", response.data)
+      this.setState({answer: response.data.answer});
+
+      console.log("received ", response.data);
     }).catch((error) => {
       console.log(error);
     });
@@ -41,7 +45,8 @@ class CharList extends React.Component {
     return (
       <div>
         <InputChar charInput={this.state.charInput} onSubmit={this.charSubmit} handleChange={this.updateCharInput}/>
-        <Character data={this.state.res}/>
+        <h3>{this.state.answer}</h3>
+        {/*<Character data={this.state.res}/>*/}
       </div>
     );
   }
