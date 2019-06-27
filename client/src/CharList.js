@@ -23,7 +23,7 @@ class CharList extends React.Component {
 
   charSubmit() {
     console.log(this.state.charInput);
-    axios.post("http://eebce435.ngrok.io", {"utterance": this.state.charInput}).then((response) => {
+    axios.post("http://3dcbeddb.ngrok.io", {"utterance": this.state.charInput}).then((response) => {
 
       // this.setState({todos: response.data});
       this.setState({answer: response.data.answer});
@@ -47,6 +47,12 @@ class CharList extends React.Component {
         <InputChar charInput={this.state.charInput} onSubmit={this.charSubmit} handleChange={this.updateCharInput}/>
         <h3>{this.state.answer}</h3>
         {/*<Character data={this.state.res}/>*/}
+        <iframe
+          allow="microphone;"
+          width="350"
+          height="430"
+          src="https://console.dialogflow.com/api-client/demo/embedded/3bd6d9d9-0d4d-4502-be2b-a3ee41f772a2">
+        </iframe>
       </div>
     );
   }
