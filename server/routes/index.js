@@ -92,7 +92,7 @@ router.post('/webhook/', (req, res) => {
           toSay = `No description of ${req.body.queryResult.parameters.character} available in the database, please ` +
             `try someone else.`
         }
-        res.json({
+        return {
           "fulfillmentText": toSay,
           "payload": {
             "facebook": {
@@ -208,17 +208,18 @@ router.post('/webhook/', (req, res) => {
 
             }
           }
-        });
+        };
       }
+    }).then((response) => {
+      res.json(response);
     }).catch((e) => console.log(e));
   } else {
 
-
-    res.json({
+    return {
       "fulfillmentText": "I am J.A.R.V.I.S., your personal assistant. Nice to meet you! " +
         "Try asking about your favorite superheroes, comics, or creators!",
 
-    });
+    };
   }
   // console.log("got here")
 });
