@@ -35,10 +35,11 @@ async function runSample(utterance) {
 
   console.log("sending text to df");
   // Send request and log result
-  return sessionClient.detectIntent(request).then((responses) => {
+  return await sessionClient.detectIntent(request).then((responses) => {
     // console.log('Detected responses');
     // console.log(responses);
     const result = responses[0].queryResult;
+    console.log(responses)
     // console.log(result);
     console.log(`  Query: ${result.queryText}`);
     console.log(`  Response: ${result.fulfillmentText}`);
@@ -68,8 +69,6 @@ const ASK_WHICH = 'AskWhich';
 function sleep (time) {
   return new Promise((resolve) => setTimeout(resolve, time));
 }
-
-
 
 
 router.post('/webhook/', (req, res) => {
@@ -231,7 +230,7 @@ router.post('/webhook/', (req, res) => {
     });
 
   } else if (intent === ASK_WHICH) {
-    res.json({"fulfillmentText": "mmmmmmmmm"});
+    res.json({"fulfillmentText": "you never should have come here"});
   } else {
       res.json({
         "fulfillmentText": "I am J.A.R.V.I.S., your personal assistant. Nice to meet you! " +
