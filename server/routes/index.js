@@ -83,13 +83,15 @@ router.post('/webhook/', (req, res) => {
   console.log("intent: ", intent);
 
   if (intent === REQ_CHARACTER) {
+    let sent = false;
     axios.get(apiurl(req.body.queryResult.parameters.character)).then(response => {
       // console.log(response.data.data.results[0]);
       if (response.data.data.count === 0) {
         res.json({
           "fulfillmentText": "I couldn't find that character, please try again."
 
-        })
+        });
+        sent = true;
       } else {
         // res.json({
         //   "fulfillmentText": response.data.data.results[0].description
@@ -215,18 +217,22 @@ router.post('/webhook/', (req, res) => {
         };
       }
     }).then((response) => {
-      res.json(response);
+      if (!sent) {
+        res.json(response);
+      }
+      sent = true;
     }).catch((e) => console.log(e));
     sleep(4500).then(() => {
-      res.json( {"fulfillmentText": "slow response"});
-      // Do something after the sleep!
+      if (!sent) {
+        res.json({"fulfillmentText": "Things are taking too long, try asking the same thing again!"});
+        sent = true;
+      }
+      //output the same intent or something
     });
 
   } else if (intent === ASK_WHICH) {
-    console.log("almost yuh");
     res.json({"fulfillmentText": "mmmmmmmmm"});
   } else {
-
       res.json({
         "fulfillmentText": "I am J.A.R.V.I.S., your personal assistant. Nice to meet you! " +
           "Try asking about your favorite superheroes, comics, or creators!",
@@ -234,7 +240,6 @@ router.post('/webhook/', (req, res) => {
       });
     }
 
-  // console.log("got here")
 });
 
 module.exports = router;
