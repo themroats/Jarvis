@@ -62,6 +62,7 @@ router.post('/', function(req, res, next) {
 });
 
 const REQ_CHARACTER = 'RequestCharacter';
+const ASK_WHICH = 'AskWhich';
 
 router.post('/webhook/', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -122,11 +123,6 @@ router.post('/webhook/', (req, res) => {
                     "title_link": response.data.data.results[0].urls[0].url,
                     "text": response.data.data.results[0].description,
                     "fields": [
-                      {
-                        "title": "Created By:",
-                        "value": "",
-                        "short": true
-                      },
                       {
                         "title": "Comic Appearances",
                         "value": response.data.data.results[0].comics.available,
@@ -213,14 +209,18 @@ router.post('/webhook/', (req, res) => {
     }).then((response) => {
       res.json(response);
     }).catch((e) => console.log(e));
+  } else if (intent === ASK_WHICH) {
+    console.log("almost yuh");
+    return {"fulfillmentText": "mmmmmmmmm",};
   } else {
 
-    return {
-      "fulfillmentText": "I am J.A.R.V.I.S., your personal assistant. Nice to meet you! " +
-        "Try asking about your favorite superheroes, comics, or creators!",
+      return {
+        "fulfillmentText": "I am J.A.R.V.I.S., your personal assistant. Nice to meet you! " +
+          "Try asking about your favorite superheroes, comics, or creators!",
 
-    };
-  }
+      }
+    }
+
   // console.log("got here")
 });
 
