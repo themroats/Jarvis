@@ -64,6 +64,14 @@ router.post('/', function(req, res, next) {
 const REQ_CHARACTER = 'RequestCharacter';
 const ASK_WHICH = 'AskWhich';
 
+// sleep time expects milliseconds
+function sleep (time) {
+  return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+
+
+
 router.post('/webhook/', (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -209,16 +217,21 @@ router.post('/webhook/', (req, res) => {
     }).then((response) => {
       res.json(response);
     }).catch((e) => console.log(e));
+    sleep(4500).then(() => {
+      res.json( {"fulfillmentText": "slow response"});
+      // Do something after the sleep!
+    });
+
   } else if (intent === ASK_WHICH) {
     console.log("almost yuh");
-    return {"fulfillmentText": "mmmmmmmmm",};
+    res.json({"fulfillmentText": "mmmmmmmmm"});
   } else {
 
-      return {
+      res.json({
         "fulfillmentText": "I am J.A.R.V.I.S., your personal assistant. Nice to meet you! " +
           "Try asking about your favorite superheroes, comics, or creators!",
 
-      }
+      });
     }
 
   // console.log("got here")
