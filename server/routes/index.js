@@ -18,8 +18,9 @@ function apiurl(charName, goal) {
   // console.log(toReturn);
   return toReturn
 }
-async function runSample(utterance) {
+async function runSample(data) {
   const projectId = 'jarvis-mxdohw';
+
   // A unique identifier for the given session
   const sessionId = uuid.v4();
 
@@ -32,31 +33,44 @@ async function runSample(utterance) {
     session: sessionPath,
 
     queryInput: {
+      parameters: {
+        "character": data.character,
+        "goal": data.goal
+      },
+      allRequiredParamsPresent: true,
+
       text: {
         // The query to send to the dialogflow agent
-        text: utterance,
+
+        text: data.utterance,
         // The language used by the client (en-US)
-        languageCode: 'en-US',
+        languageCode: 'en',
       },
     },
   };
+  console.log("request is: ", request.queryInput)
 
-  console.log("sending text to df");
+  // console.log("sending text to df");
   // Send request and log result
   return await sessionClient.detectIntent(request).then((responses) => {
-    // console.log('Detected responses');
-    // console.log(responses);
     const result = responses[0].queryResult;
-    console.log(responses)
-    // console.log(result);
-    console.log(`  Query: ${result.queryText}`);
-    console.log(`  Response: ${result.fulfillmentText}`);
-    if (result.intent) {
-      console.log(`  Intent: ${result.intent.displayName}`);
-    } else {
-      console.log(`  No intent matched.`);
+    // console.log('Detected responses');
+    // // console.log(responses);
+    // console.log(responses[0].queryResult.parameters)
+    // // console.log(result);
+    // console.log(`  Query: ${result.queryText}`);
+    // console.log(`  Response: ${result.fulfillmentText}`);
+    // if (result.intent) {
+    //   console.log(`  Intent: ${result.intent.displayName}`);
+    // } else {
+    //   console.log(`  No intent matched.`);
+    // }
+
+    return {
+      "answer": result.fulfillmentText,
+      "params": responses[0].queryResult.parameters.fields
     }
-    return result.fulfillmentText;
+
   });
 
 }
@@ -66,7 +80,7 @@ router.post('/', function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   console.log("This is the body:");
   console.log(req.body);
-  runSample(req.body.utterance).then((r) => res.send({"answer": r})).catch((e) => console.log(e));
+  runSample({"utterance": req.body.utterance, "allPresent": req.body.allPresent, "goal": req.body.goal, "character": req.body.character}).then((r) => res.send({"answer": r.answer, "params": r.params})).catch((e) => console.log(e));
 
 });
 
