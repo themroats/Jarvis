@@ -1,5 +1,4 @@
 import * as React from "react";
-import Character from "./Character";
 import axios from 'axios';
 import InputChar from "./InputChar";
 
@@ -27,13 +26,58 @@ class CharList extends React.Component {
 
   charSubmit() {
     console.log(this.state.charInput);
-    axios.post("http://localhost:3001", {"utterance": this.state.character !== "" && this.state.goal !== "" ? `my favorite ${this.state.goal} is ${this.state.character}` : this.state.charInput, "character": this.state.character, "goal": this.state.goal}).then((response) => {
-
-      // this.setState({todos: response.data});
-      this.setState({answer: response.data.answer, character: response.data.params.character.stringValue === "" ? this.state.character : response.data.params.character.stringValue, goal: response.data.params.goal.stringValue === "" ? this.state.goal : response.data.params.goal.stringValue},
+    axios.post("http://localhost:3001",
+      {
+        "utterance": this.state.character !== "" && this.state.goal !== "" ? `my favorite ${this.state.goal} is ${this.state.character}` : this.state.charInput,
+        "character": this.state.character,
+        "goal": this.state.goal
+      }).then((response) => {
+        console.log("yuh", response.data.params, Object.keys(response.data.params).length, Object.keys(response.data.params).length === 0, (Object.keys(response.data.params).length === 0 || response.data.params.character.stringValue === ""))
+        const char = (Object.keys(response.data.params).length === 0 || response.data.params.character.stringValue === "") ?
+          this.state.character : response.data.params.character.stringValue;
+        const goal = Object.keys(response.data.params).length === 0 || response.data.params.goal.stringValue === "" ? this.state.goal : response.data.params.goal.stringValue;
+        this.setState({
+            character: char,
+            goal: goal
+          },
         () => {
-          if (response.data.res) this.setState({answer: response.data.res.description})
-          console.log(this.state)
+          if (this.state.character !== "" && this.state.goal !== "") {
+
+
+
+
+            axios.post("http://localhost:3001",
+              {
+                "utterance": this.state.character !== "" && this.state.goal !== "" ? `my favorite ${this.state.goal} is ${this.state.character}` : this.state.charInput,
+                "character": this.state.character,
+                "goal": this.state.goal
+              }).then((response) => {
+              this.setState({answer: response.data.answer, character: "" , goal:  ""},
+                // () => {
+                //   if (this.state.character !== "" && this.state.goal !== "") {
+                //     this.setState({answer: response.data.res.description})
+                //   }
+                //   console.log("state is ", this.state)
+                // }
+                );
+
+              console.log("received ", response.data);
+            }).catch((error) => {
+              console.log(error);
+            });
+
+
+
+
+
+
+
+
+            // this.setState({answer: response.data.res.description})
+          } else {
+            this.setState({answer: response.data.answer})
+          }
+          console.log("state is ", this.state)
         });
 
       console.log("received ", response.data);
