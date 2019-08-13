@@ -138,7 +138,28 @@ router.post('/webhook/', (req, res) => {
           return {
             "fulfillmentText": toSay,
             "payload": {
-              "facebook": {},
+              "facebook": {
+                "attachment":{
+                  "type":"template",
+                  "payload":{
+                    "template_type":"generic",
+                    "elements":[
+                      {
+                        "title": response.data.data.results[0].name,
+                        "image_url": response.data.data.results[0].thumbnail.path + "." + response.data.data.results[0].thumbnail.extension,
+                        "subtitle": response.data.data.results[0].description,
+                        "buttons":[
+                          {
+                            "type": "web_url",
+                            "url": response.data.data.results[0].urls[0].url,
+                            "title": "Learn More"
+                          }
+                        ]
+                      },
+                    ]
+                  }
+                }
+              },
               "kik": {},
               "line": {},
               "skype": {},
@@ -243,7 +264,28 @@ router.post('/webhook/', (req, res) => {
           res.json({
             "fulfillmentText": `${response.data.data.results[0].title} is a part of ${response.data.data.results[0].series.name}${response.data.data.results[0].events.available !== 0 ? " and " + response.data.data.results[0].events + " events" : ""} and was created by ${formatCreators(response.data.data.results[0].creators.items)}.`,
             "payload": {
-              "facebook": {},
+              "facebook": {
+                "attachment":{
+                  "type":"template",
+                  "payload":{
+                    "template_type":"generic",
+                    "elements":[
+                      {
+                        "title": response.data.data.results[0].title,
+                        "image_url": response.data.data.results[0].images.length !== 0 && response.data.data.results[0].thumbnail.path + "." + response.data.data.results[0].thumbnail.extension === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg" ? "http://i.annihil.us/u/prod/marvel/i/mg/d/00/56f45f95cdd1e.jpg" : response.data.data.results[0].thumbnail.path + "." + response.data.data.results[0].thumbnail.extension,
+                        "subtitle": `Series: ${response.data.data.results[0].series.name}, Creators: ${formatCreators(response.data.data.results[0].creators.items)}, Events: ${response.data.data.results[0].events.available !== 0 ? response.data.data.results[0].events : "None"}`,
+                        "buttons":[
+                          {
+                            "type": "web_url",
+                            "url": response.data.data.results[0].urls[0].url,
+                            "title": "Learn More"
+                          }
+                        ]
+                      },
+                    ]
+                  }
+                }
+              },
               "kik": {},
               "line": {},
               "skype": {},
@@ -335,7 +377,28 @@ router.post('/webhook/', (req, res) => {
           res.json({
             "fulfillmentText": `${response.data.data.results[0].fullName} has created ${response.data.data.results[0].comics.available} comics, ${response.data.data.results[0].stories.available} stories, ${response.data.data.results[0].events.available} events, and ${response.data.data.results[0].series.available} series.`,
             "payload": {
-              "facebook": {},
+              "facebook": {
+                "attachment":{
+                  "type":"template",
+                  "payload":{
+                    "template_type":"generic",
+                    "elements":[
+                      {
+                        "title": response.data.data.results[0].fullName,
+                        "image_url": response.data.data.results[0].thumbnail.path + "." + response.data.data.results[0].thumbnail.extension,
+                        "subtitle": `Comics: ${response.data.data.results[0].comics.available}, Stories: ${response.data.data.results[0].stories.available}, Events: ${response.data.data.results[0].events.available}, Series: ${response.data.data.results[0].series.available}`,
+                        "buttons":[
+                          {
+                            "type": "web_url",
+                            "url": response.data.data.results[0].urls[0].url,
+                            "title": "Learn More"
+                          }
+                        ]
+                      },
+                    ]
+                  }
+                }
+              },
               "kik": {},
               "line": {},
               "skype": {},

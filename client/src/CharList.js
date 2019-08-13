@@ -86,12 +86,6 @@ class CharList extends React.Component {
                 this.setState({answer: response.data.answer, character: "" , goal:  "", attachment: response.data.attachment}, () => {
                   console.log(this.state)
                   }
-                // () => {
-                //   if (this.state.character !== "" && this.state.goal !== "") {
-                //     this.setState({answer: response.data.res.description})
-                //   }
-                //   console.log("state is ", this.state)
-                // }
                 );
 
               console.log("received ", response.data);
