@@ -3,6 +3,8 @@ const router = express.Router();
 const dialogflow = require('dialogflow');
 const uuid = require('uuid');
 const axios = require('axios');
+const util = require('util')
+
 
 // let apiurl = "https://gateway.marvel.com:443/v1/public/characters/1009368?ts=1&apikey=4b3c2b558a833a5e655ad1fd6d22ecce&hash=5fe138c49d763b8dd2f052d472324550";
 function apiurl(charName, goal) {
@@ -65,10 +67,12 @@ async function runSample(data) {
     // } else {
     //   console.log(`  No intent matched.`);
     // }
+    // console.log("result is", util.inspect(result.webhookPayload.fields.slack.structValue.fields.attachments.listValue.values[0].structValue.fields, {showHidden: false, depth: null}))
 
     return {
       "answer": result.fulfillmentText,
-      "params": responses[0].queryResult.parameters.fields
+      "params": responses[0].queryResult.parameters.fields,
+      "attachment": result.webhookPayload ? result.webhookPayload.fields.slack.structValue.fields.attachments.listValue.values[0].structValue.fields : {}
     }
 
   });
@@ -80,7 +84,7 @@ router.post('/', function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   console.log("This is the body:");
   console.log(req.body);
-  runSample({"utterance": req.body.utterance, "allPresent": req.body.allPresent, "goal": req.body.goal, "character": req.body.character}).then((r) => res.send({"answer": r.answer, "params": r.params})).catch((e) => console.log(e));
+  runSample({"utterance": req.body.utterance, "allPresent": req.body.allPresent, "goal": req.body.goal, "character": req.body.character}).then((r) => res.send({"answer": r.answer, "params": r.params, "attachment": r.attachment})).catch((e) => console.log(e));
 
 });
 
@@ -143,7 +147,7 @@ router.post('/webhook/', (req, res) => {
                   {
                     "mrkdwn_in": ["text"],
                     "color": "#f0131e",
-                    "pretext": `Here's the information I found on ${req.body.queryResult.parameters.character}:`,
+                    "pretext": `Here's the information I found on "${req.body.queryResult.parameters.character}":`,
                     "title": response.data.data.results[0].name,
                     "title_link": response.data.data.results[0].urls[0].url,
                     "text": response.data.data.results[0].description,
@@ -248,7 +252,7 @@ router.post('/webhook/', (req, res) => {
                   {
                     "mrkdwn_in": ["text"],
                     "color": "#f0131e",
-                    "pretext": `Here's the information I found on ${req.body.queryResult.parameters.character}:`,
+                    "pretext": `Here's the information I found on "${req.body.queryResult.parameters.character}":`,
                     "title": response.data.data.results[0].title,
                     "title_link": response.data.data.results[0].urls[0].url,
                     "text": response.data.data.results[0].description,
@@ -340,7 +344,7 @@ router.post('/webhook/', (req, res) => {
                   {
                     "mrkdwn_in": ["text"],
                     "color": "#f0131e",
-                    "pretext": `Here's the information I found on ${req.body.queryResult.parameters.character}:`,
+                    "pretext": `Here's the information I found on "${req.body.queryResult.parameters.character}":`,
                     "title": response.data.data.results[0].fullName,
                     "title_link": response.data.data.results[0].urls[0].url,
                     "text": response.data.data.results[0].description,
